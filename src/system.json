@@ -1,0 +1,30 @@
+{
+  "name": "foundry-fitd",
+  "title": "foundry-fitd",
+  "description": "",
+  "version": "0.1.0",
+  "author": "",
+  "authors": [
+    {
+      "name": "",
+      "email": "",
+      "url": ""
+    }
+  ],
+  "scripts": [],
+  "esmodules": ["foundry-fitd.js"],
+  "styles": ["foundry-fitd.css"],
+  "packs": [],
+  "languages": [],
+  "gridDistance": 1,
+  "gridUnits": "",
+  "minimumCoreVersion": "0.5.0",
+  "compatibleCoreVersion": "0.5.0",
+  "url": "",
+  "manifest": "",
+  "download": "",
+  "license": "",
+  "readme": "",
+  "bugs": "",
+  "changelog": ""
+}
