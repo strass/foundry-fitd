@@ -9,7 +9,7 @@ export class SimpleActorSheet extends ActorSheet {
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       classes: ["worldbuilding", "sheet", "actor"],
-      template: "systems/worldbuilding/templates/actor-sheet.html",
+      template: "systems/fitd/templates/actor-sheet.html",
       width: 600,
       height: 600,
       tabs: [
