@@ -11,39 +11,39 @@
  */
 
 // Import TypeScript modules
-import { registerSettings } from './module/settings.js';
-import { preloadTemplates } from './module/preloadTemplates.js';
+import { registerSettings } from "./module/settings.js";
+import { preloadTemplates } from "./module/preloadTemplates.js";
 
 /* ------------------------------------ */
 /* Initialize system					*/
 /* ------------------------------------ */
-Hooks.once('init', async function() {
-	console.log('foundry-fitd | Initializing foundry-fitd');
+Hooks.once("init", async function () {
+  console.log("foundry-fitd | Initializing foundry-fitd");
 
-	// Assign custom classes and constants here
-	
-	// Register custom system settings
-	registerSettings();
-	
-	// Preload Handlebars templates
-	await preloadTemplates();
+  // Assign custom classes and constants here
 
-	// Register custom sheets (if any)
+  // Register custom system settings
+  registerSettings();
+
+  // Preload Handlebars templates
+  await preloadTemplates();
+
+  // Register custom sheets (if any)
 });
 
 /* ------------------------------------ */
 /* Setup system							*/
 /* ------------------------------------ */
-Hooks.once('setup', function() {
-	// Do anything after initialization but before
-	// ready
+Hooks.once("setup", function () {
+  // Do anything after initialization but before
+  // ready
 });
 
 /* ------------------------------------ */
 /* When ready							*/
 /* ------------------------------------ */
-Hooks.once('ready', function() {
-	// Do anything once the system is ready
+Hooks.once("ready", function () {
+  // Do anything once the system is ready
 });
 
 // Add any additional hooks if necessary
