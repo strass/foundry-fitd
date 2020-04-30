@@ -1,9 +1,7 @@
 import { FitDActorSheetData } from "../types/actor";
-const _ = require('lodash')
+import type Lodash from "lodash";
+const _: typeof Lodash = require("lodash");
 
-const reduce = _.reduce;
-
-console.log(reduce);
 /**
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
@@ -121,10 +119,13 @@ export class FitDActorSheet extends ActorSheet {
   /** @override */
   _updateObject(event: MouseEvent, formData: Record<string, any>) {
     // Sync the sheet's name with the data's name
+    console.debug("_updateObject in", formData);
     formData["data.name"] = formData.name;
+    formData["data.stress"] =
+      _.findLastIndex(formData["data.stress"] as boolean[], Boolean) + 1;
     // Server complains if I don't do this?
     formData["img"] = undefined;
-    console.debug("_updateObject:", formData);
+    console.debug("_updateObject out:", formData);
     return this.object.update(formData);
   }
 }

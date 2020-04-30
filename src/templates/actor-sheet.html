@@ -1,14 +1,31 @@
+{{log 'data:' data}}
+{{#*inline "input"}}
+<input name="{{name}}" type="text" value="{{value}}" placeholder="{{placeholder}}" />
+{{/inline}}
 <form class="{{cssClass}}" autocomplete="off">
     <header class="sheet-header">
         <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
         <div class="header-fields">
             <h1 class="charname"><input name="name" type="text" value="{{data.name}}" placeholder="Name" /></h1>
-            {{log 'data:' data}}
-            {{log 'item:' item}}
-            <div class="resource">
-                <label>Weight</label>
-                <input type="text" name="data.weight" value="{{data.weight}}" data-dtype="Number" />
+            {{>input name="data.alias" value=data.alias placeholder="Alias" }}
+            {{>input name="data.look" value=data.look placeholder="Look" }}
+            {{>input name="data.heritage" value=data.heritage placeholder="Heritage" }}
+            {{>input name="data.background" value=data.background placeholder="Background" }}
+            {{>input name="data.vice" value=data.vice placeholder="Vice" }}
+            {{>input name="data.purveyor" value=data.purveyor placeholder="Purveyor" }}
+
+            <div class="stress">
+                <label>Stress</label>
+                {{#repeat start=1 count=9}}
+                <input type="checkbox" {{#gte data.stress @index}}checked{{/gte}} name="data.stress"
+                    value="{{data.stress}}" />
+                {{/repeat}}
             </div>
+            <ul>
+                {{#each data.actions }}
+                <li>{{@key}}: {{this}}</li>
+                {{/each}}
+            </ul>
         </div>
     </header>
 
