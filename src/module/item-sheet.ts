@@ -8,7 +8,7 @@ export class SimpleItemSheet extends ItemSheet {
   /** @override */
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
-      classes: ["worldbuilding", "sheet", "item"],
+      classes: ["fitd", "sheet", "item"],
       template: "systems/fitd/templates/item-sheet.html",
       width: 520,
       height: 480,

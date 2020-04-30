@@ -168,6 +168,7 @@ async function copyFiles() {
 		'module.json',
 		'system.json',
 		'template.json',
+		'vendor.js',
 	];
 	try {
 		for (const file of statics) {

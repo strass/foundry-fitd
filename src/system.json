@@ -4,6 +4,7 @@
   "description": "",
   "version": "0.1.0",
   "author": "strass",
+  "scripts": ["vendor.js"],
   "esmodules": ["fitd.js"],
   "styles": ["fitd.css"],
   "gridDistance": 5,

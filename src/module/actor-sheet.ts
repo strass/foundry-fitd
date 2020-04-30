@@ -1,14 +1,18 @@
-// @ts-nocheck
+import { FitDActorSheetData } from "../types/actor";
+const _ = require('lodash')
 
+const reduce = _.reduce;
+
+console.log(reduce);
 /**
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
  */
-export class SimpleActorSheet extends ActorSheet {
+export class FitDActorSheet extends ActorSheet {
   /** @override */
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
-      classes: ["worldbuilding", "sheet", "actor"],
+      classes: ["fitd", "sheet", "actor"],
       template: "systems/fitd/templates/actor-sheet.html",
       width: 600,
       height: 600,
@@ -25,46 +29,46 @@ export class SimpleActorSheet extends ActorSheet {
   /* -------------------------------------------- */
 
   /** @override */
-  getData() {
-    const data = super.getData();
-    data.dtypes = ["String", "Number", "Boolean"];
-    for (let attr of Object.values(data.data.attributes)) {
-      attr.isCheckbox = attr.dtype === "Boolean";
-    }
-    return data;
+  getData(): FitDActorSheetData {
+    const sheet = super.getData();
+    console.log("getData:", sheet);
+    return sheet as any;
   }
 
   /* -------------------------------------------- */
 
   /** @override */
-  activateListeners(html) {
+  activateListeners(html: HTMLElement | JQuery<HTMLElement>) {
     super.activateListeners(html);
 
     // Everything below here is only needed if the sheet is editable
     if (!this.options.editable) return;
 
     // Update Inventory Item
-    html.find(".item-edit").click((ev) => {
+    (html as JQuery<HTMLElement>).find(".item-edit").click((ev) => {
       const li = $(ev.currentTarget).parents(".item");
       const item = this.actor.getOwnedItem(li.data("itemId"));
-      item.sheet.render(true);
+      if (item) {
+        item.sheet.render(true);
+      } else {
+        console.error("Could not find item");
+      }
     });
 
     // Delete Inventory Item
-    html.find(".item-delete").click((ev) => {
+    (html as JQuery<HTMLElement>).find(".item-delete").click((ev) => {
       const li = $(ev.currentTarget).parents(".item");
       this.actor.deleteOwnedItem(li.data("itemId"));
       li.slideUp(200, () => this.render(false));
     });
 
     // Add or Remove Attribute
-    html
-      .find(".attributes")
-      .on(
-        "click",
-        ".attribute-control",
-        this._onClickAttributeControl.bind(this)
-      );
+    (html as JQuery<HTMLElement>).find(".attributes").on(
+      // @ts-ignore
+      "click",
+      ".attribute-control",
+      this._onClickAttributeControl.bind(this)
+    );
   }
 
   /* -------------------------------------------- */
@@ -72,7 +76,7 @@ export class SimpleActorSheet extends ActorSheet {
   /** @override */
   setPosition(options = {}) {
     const position = super.setPosition(options);
-    const sheetBody = this.element.find(".sheet-body");
+    const sheetBody = (this.element as JQuery<Element>).find(".sheet-body");
     const bodyHeight = position.height - 192;
     sheetBody.css("height", bodyHeight);
     return position;
@@ -85,10 +89,11 @@ export class SimpleActorSheet extends ActorSheet {
    * @param {MouseEvent} event    The originating left click event
    * @private
    */
-  async _onClickAttributeControl(event) {
+  async _onClickAttributeControl(event: MouseEvent) {
     event.preventDefault();
     const a = event.currentTarget;
-    const action = a.dataset.action;
+    // @ts-ignore
+    const action = a?.dataset.action;
     const attrs = this.object.data.data.attributes;
     const form = this.form;
 
@@ -97,13 +102,14 @@ export class SimpleActorSheet extends ActorSheet {
       const nk = Object.keys(attrs).length + 1;
       let newKey = document.createElement("div");
       newKey.innerHTML = `<input type="text" name="data.attributes.attr${nk}.key" value="attr${nk}"/>`;
-      newKey = newKey.children[0];
+      newKey = newKey.children[0] as HTMLDivElement;
       form.appendChild(newKey);
       await this._onSubmit(event);
     }
 
     // Remove existing attribute
     else if (action === "delete") {
+      // @ts-ignore
       const li = a.closest(".attribute");
       li.parentElement.removeChild(li);
       await this._onSubmit(event);
@@ -113,37 +119,12 @@ export class SimpleActorSheet extends ActorSheet {
   /* -------------------------------------------- */
 
   /** @override */
-  _updateObject(event, formData) {
-    // Handle the free-form attributes list
-    const formAttrs = expandObject(formData).data.attributes || {};
-    const attributes = Object.values(formAttrs).reduce((obj, v) => {
-      let k = v["key"].trim();
-      if (/[\s\.]/.test(k))
-        return ui.notifications.error(
-          "Attribute keys may not contain spaces or periods"
-        );
-      delete v["key"];
-      obj[k] = v;
-      return obj;
-    }, {});
-
-    // Remove attributes which are no longer used
-    for (let k of Object.keys(this.object.data.data.attributes)) {
-      if (!attributes.hasOwnProperty(k)) attributes[`-=${k}`] = null;
-    }
-
-    // Re-combine formData
-    formData = Object.entries(formData)
-      .filter((e) => !e[0].startsWith("data.attributes"))
-      .reduce(
-        (obj, e) => {
-          obj[e[0]] = e[1];
-          return obj;
-        },
-        { _id: this.object._id, "data.attributes": attributes }
-      );
-
-    // Update the Actor
+  _updateObject(event: MouseEvent, formData: Record<string, any>) {
+    // Sync the sheet's name with the data's name
+    formData["data.name"] = formData.name;
+    // Server complains if I don't do this?
+    formData["img"] = undefined;
+    console.debug("_updateObject:", formData);
     return this.object.update(formData);
   }
 }
